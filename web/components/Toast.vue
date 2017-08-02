@@ -63,7 +63,7 @@
 
 .toast-list-item
   transition all 1s
-  width 240px
+  width 300px
 
 .toast-list-enter, .toast-list-leave-to
   opacity 0
@@ -123,8 +123,8 @@ export default {
   data () {
     return {
       defaults: {
-        title: 'undefined title',
-        body: 'undefined body',
+        title: 'debug',
+        body: 'body',
         timeout: 5,
       },
       content: [],
