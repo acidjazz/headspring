@@ -11,11 +11,8 @@ class Employee extends \Moloquent
 
   protected $collection = 'employee';
   protected $primaryKey = '_id';
-
-  protected $fillable = [ 'first_name', 'last_name', 'job title', 'location', 'email' ];
-
+  protected $fillable = [ 'firstname', 'lastname', 'title', 'address', 'email' ];
   protected $dateFormat = 'c';
-
   protected $dates = ['deleted_at'];
 
   /*

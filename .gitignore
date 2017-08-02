@@ -1,8 +1,17 @@
-api/node_modules
-api/public/hot
-api/public/storage
-api/storage/*.key
-api/vendor
-api/npm-debug.log
-api/yarn-error.log
-api/.env
+# osx
+.DS_Store
+
+# vim
+*.swp
+
+# js
+node_modules
+
+# php
+composer.lock
+vendor
+.env*
+public/storage
+public/hot
+storage/*.key
+
