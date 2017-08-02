@@ -51,7 +51,7 @@ abstract class MetApiController extends BaseController
       $collection->currentPage()
     );
 
-    $paginator->setMaxPagesToShow(6);
+    $paginator->setMaxPagesToShow(7);
 
     $pages = [];
 

@@ -16,6 +16,7 @@ class EmployeeController extends MetApiController {
   {
 
     $this->addOption('_id', 'regex:/[0-9a-fA-F]{24}/');
+    $this->addOption('active', 'in:true,false,both', 'both');
 
     if (!$query = $this->getQuery()) {
       return $this->error();
@@ -26,6 +27,14 @@ class EmployeeController extends MetApiController {
 
     if (isset($query['combined']['_id'])) {
       $employees = $employees->where(['_id' => $query['combined']['_id']]);
+    }
+
+    if (isset($query['combined']['active']) && $query['combined']['active'] !== 'both') {
+      if ($query['combined']['active'] === 'true') {
+        $employees = $employees->where(['active' => true]);
+      } else {
+        $employees = $employees->where(['active' => false]);
+      }
     }
 
     $employees = $employees->paginate(10);
