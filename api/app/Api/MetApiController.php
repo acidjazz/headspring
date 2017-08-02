@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Validator;
 use League\Fractal;
+use JasonGrimes\Paginator;
 
 abstract class MetApiController extends BaseController
 {
@@ -43,6 +44,21 @@ abstract class MetApiController extends BaseController
 
   protected function addPaginate($collection) {
 
+
+    $paginator = new Paginator(
+      $collection->total(),
+      $collection->perPage(),
+      $collection->currentPage()
+    );
+
+    $paginator->setMaxPagesToShow(6);
+
+    $pages = [];
+
+    foreach ($paginator->getPages() as $page) {
+      $pages[] = $page['num'];
+    }
+
     return $this->addMeta('paginate', [
       'total' => $collection->total(),
       'per_page' => $collection->perPage(),
@@ -50,6 +66,7 @@ abstract class MetApiController extends BaseController
       'last_page' => $collection->lastPage(),
       'next_page_url' => $collection->nextPageUrl(),
       'prev_page_url' => $collection->previousPageUrl(),
+      'pages' => $pages,
     ]);
 
   }

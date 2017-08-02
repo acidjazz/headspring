@@ -28,7 +28,7 @@ class EmployeeController extends MetApiController {
       $employees = $employees->where(['_id' => $query['combined']['_id']]);
     }
 
-    $employees = $employees->paginate(20);
+    $employees = $employees->paginate(10);
     $this->addPaginate($employees);
 
     return $this->render($employees->items(),false);
