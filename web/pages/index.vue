@@ -19,7 +19,7 @@
           .level-left
             .level-item
               p.subtitle.is-5
-                strong {{ api.result.paginate.total }} 
+                strong {{ numeral(api.result.paginate.total).format('0,0') }} 
                 | Employees
             .level-item
               .field.has-addons
@@ -109,6 +109,8 @@ import Toast from '~/components/Toast.vue'
 import Paginate from '~/components/Paginate.vue'
 import Moment from '~/components/Moment.vue'
 
+import numeral from 'numeral'
+
 export default {
   components: {
     Top,
@@ -145,6 +147,7 @@ export default {
   data () {
 
     return {
+      numeral: numeral,
       api: {
         complete: 0,
         params: {
