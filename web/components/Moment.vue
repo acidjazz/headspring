@@ -1,5 +1,5 @@
 <template lang="pug">
-  time(:datetime="datetime") ...
+time(:datetime="datetime") {{ value }}
 </template>
 
 <script>
@@ -17,17 +17,23 @@ export default {
   },
   methods: {
     set () {
-      document.querySelectorAll('time').forEach((el) => {
-        el.innerHTML = moment(el.getAttribute('datetime')).fromNow()
-      })
+      this.value = moment(this.datetime).fromNow()
     }
   },
   mounted () {
-    if (window.moment !== undefined) {
-      return true
-    }
     this.set()
-    window.moment = setInterval(this.set, this.delay)
+    this.interval = setInterval(this.set, this.delay)
+  },
+
+  beforeDestroy () {
+    clearInterval(this.interval)
+  },
+
+  data () {
+    return {
+      interval: false,
+      value: '...',
+    }
   },
 }
 </script>

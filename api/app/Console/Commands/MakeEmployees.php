@@ -75,6 +75,8 @@ class MakeEmployees extends Command
           'zip'=> $faker->postcode,
         ];
 
+        $employee->active = rand(0,1) === 1;
+
         $employee->save();
         $bar->advance();
 
