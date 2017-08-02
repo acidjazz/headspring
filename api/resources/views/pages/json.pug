@@ -1,0 +1,11 @@
+doctype
+html
+  head
+    title json-browse
+    link(rel='stylesheet',href="/css/vendor.css",type='text/css',media='all')
+    script(type='text/javascript', src='/js/app.js')
+    script(type='text/javascript', src='/js/vendor.js')
+  body
+    #json.json-body=$json
+    script.
+      $(function() { $('#json').jsonBrowse(!{$json}); });
