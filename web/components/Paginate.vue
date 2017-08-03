@@ -17,16 +17,22 @@
         a.pagination-link(
           v-else,
           :class="{'is-current': paginate.current_page === page}",
-          @click="change(page)") {{ page }}
+          @click="change(page)") {{ numeral(page).format('0,0') }}
 </template>
 <script>
+import numeral from 'numeral'
 export default {
   props: ['paginate', 'current'],
   methods: {
     change (page) {
       this.$emit('change', page)
     }
-  }
+  },
+  data () {
+    return {
+      numeral: numeral
+    }
+  },
 }
 </script>
 
