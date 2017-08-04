@@ -21,7 +21,7 @@ module.exports = {
 
 
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.0/css/bulma.min.css' },
-      // { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/bulmaswatch/0.4.3/cerulean/bulmaswatch.min.css' },
+      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/bulmaswatch/0.4.3/flatly/bulmaswatch.min.css' },
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' },
     ]
   },

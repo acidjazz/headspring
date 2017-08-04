@@ -14,3 +14,4 @@ use Illuminate\Http\Request;
 */
 
 Route::get('employees', 'EmployeeController@get');
+Route::post('employees/modify', 'EmployeeController@modify');

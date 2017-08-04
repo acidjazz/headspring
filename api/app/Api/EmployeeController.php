@@ -37,11 +37,39 @@ class EmployeeController extends MetApiController {
       }
     }
 
+    // $employees = $employees->orderBy('updated_at', 'desc');
+    // $employees = $employees->orderBy('_id', 'desc');
     $employees = $employees->paginate(10);
     $this->addPaginate($employees);
 
     return $this->render($employees->items(),false);
 
+  }
+
+  public function modify(Request $request)
+  {
+
+    $this->addOption('firstname', 'required|string');
+    $this->addOption('lastname', 'required|string');
+    $this->addOption('email', 'required|email');
+    $this->addOption('title', 'required|string');
+    $this->addOption('address.street', 'required|string');
+    $this->addOption('address.city', 'required|string');
+    $this->addOption('address.state', 'required|string');
+    $this->addOption('address.zip', 'required|string');
+
+    if (!$query = $this->getQuery()) {
+      return $this->error();
+    }
+
+    $employee = new Employee();
+    foreach ($query['combined'] as $key=>$value) {
+      $employee->$key = $value;
+    }
+
+    $employee->save();
+
+    return $this->render(['status' => 'Employee added successfully', '_id' => $employee->_id]);
   }
 
 }

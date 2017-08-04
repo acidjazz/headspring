@@ -57,7 +57,7 @@
 
 #Toasts > ul
   position fixed
-  top 40px
+  top 80px
   right 20px
   z-index 10
 
