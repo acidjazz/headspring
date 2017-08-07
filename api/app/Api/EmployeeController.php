@@ -55,12 +55,13 @@ class EmployeeController extends MetApiController {
 
   public function modify(Request $request)
   {
-    $this->addOption('_id', 'regex:/[0-9a-fA-F]{24}/');
+    $this->addOption('_id', ["regex:/[0-9a-fA-F]{24}|new/"]);
 
     $this->addOption('firstname', 'required|string');
     $this->addOption('lastname', 'required|string');
     $this->addOption('email', 'required|email');
     $this->addOption('title', 'required|string');
+    $this->addOption('address', 'required|array');
     $this->addOption('address.street', 'required|string');
     $this->addOption('address.city', 'required|string');
     $this->addOption('address.state', 'required|string');
@@ -73,6 +74,7 @@ class EmployeeController extends MetApiController {
     if ($query['combined']['_id'] === 'new') {
       $employee = new Employee();
       $message = 'Employee added successfully';
+      unset($query['combined']['_id']);
     } else {
       $employee = Employee::find($query['combined']['_id']);
       $message = 'Employee updated successfully';

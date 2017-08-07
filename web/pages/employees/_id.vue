@@ -143,6 +143,11 @@ export default {
           body: result.data.data.status
         })
 
+        if (result.data._id) {
+          console.log('/employees/' + result.data._id)
+          // this.$router.go('/employees/' + result.data.data._id)
+        }
+
       })
       .catch(error => {
         if (error.response !== undefined) {
@@ -184,7 +189,7 @@ export default {
       result: undefined,
       errors: {},
       employee: {
-        id: this.$route.params.id,
+        _id: this.$route.params.id,
         firstname: '',
         lastname: '',
         email: '',
