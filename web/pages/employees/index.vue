@@ -8,48 +8,48 @@
           li: router-link(to="/employees") Employees
           li.is-active: a List
   .container
-    .has-text-centered.has-text-primary(v-if="api.result === undefined")
+    .has-text-centered.has-text-primary(v-if="result === undefined")
       span.icon.is-large
         i.fa.fa-spinner.fa-pulse
 
-    .has-text-centered(v-else-if="api.result.data.length === 0")
-      span.icon
-        i.fa.fa-bell
-      span &nbsp; No employees found
     div(v-else)
 
       nav.level
         .level-left
           .level-item
             p.subtitle.is-5
-              strong {{ numeral(api.result.paginate.total).format('0,0') }} 
+              strong {{ numeral(result.paginate.total).format('0,0') }} 
               | Employees
           .level-item
             .field.has-addons
               p.control
-                input.input(type="text",placeholder="Find an Employee")
+                input.input(type="text",placeholder="Find an Employee",v-model="params.search")
               p.control
                 button.button Search
         .level-right
-          p.level-item(v-if="api.params.active === 'both'")
+          p.level-item(v-if="params.active === 'both'")
             strong All
           p.level-item(v-else)
-            a(@click="api.params.active = 'both'") All
+            a(@click="params.active = 'both'") All
 
-          p.level-item(v-if="api.params.active === true")
+          p.level-item(v-if="params.active === true")
             strong Active
           p.level-item(v-else)
-            a(@click="api.params.active = true") Active
+            a(@click="params.active = true") Active
 
-          p.level-item(v-if="api.params.active === false")
+          p.level-item(v-if="params.active === false")
             strong Inactive
           p.level-item(v-else)
-            a(@click="api.params.active = false") Inactive
+            a(@click="params.active = false") Inactive
 
           p.level-item
             router-link.button.is-primary(to="/employees/new") New
 
-      table.table
+      section.section.has-text-centered(v-if="result.data.length === 0")
+        span.icon
+          i.fa.fa-bell
+        span &nbsp; No employees found
+      table.table(v-else)
         thead
           tr
             th Name
@@ -59,11 +59,13 @@
             th Active 
         transition-group(name="e",tag="tbody")
           router-link(
-            v-for="employee in api.result.data",
+            v-for="employee in result.data",
             :key="employee._id",
             tag="tr",
             :to="'/employees/' + employee._id").e-item
-            td {{ employee.firstname }} {{ employee.lastname }}
+            td 
+              | {{ employee.firstname }}
+              | {{ employee.lastname }}
             td {{ employee.email }}
             td {{ employee.title }}
             td
@@ -75,7 +77,7 @@
               span.icon.has-text-danger
                 i.fa.fa-ban
 
-      Paginate(:paginate="api.result.paginate",@change="api.params.page = $event")
+      Paginate(:paginate="result.paginate",@change="params.page = $event")
   Toast(ref='toast')
 </template>
 
@@ -116,19 +118,25 @@ export default {
   methods: {
 
     get () {
-      axios.get('http://localhost:8000/api/employees', {params: this.api.params})
+      let config = {
+        headers: {'Accept': 'application/json'}
+      }
+      axios.get('http://localhost:8000/employees', {params: this.params, headers: {'Accept': 'application/json'}})
       .then((res) => {
-        this.api.result = res.data
+        this.result = res.data
       })
     },
   },
 
   watch: {
-    'api.params.page' (value) {
+    'params.search' (value) {
       this.get()
     },
-    'api.params.active' (value) {
-      this.api.params.page = 1
+    'params.page' (value) {
+      this.get()
+    },
+    'params.active' (value) {
+      this.params.page = 1
       this.get()
     }
   },
@@ -142,14 +150,13 @@ export default {
 
     return {
       numeral: numeral,
-      api: {
-        complete: 0,
-        params: {
-          page: 1,
-          active: 'both',
-        },
-        result: undefined,
-      }
+      complete: 0,
+      params: {
+        page: 1,
+        active: 'both',
+        search: '',
+      },
+      result: undefined,
     }
   }
 

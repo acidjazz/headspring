@@ -127,7 +127,7 @@ export default {
   methods: {
 
     get () {
-      axios.get('http://localhost:8000/api/employees', {params: {_id: this.$route.params.id}})
+      axios.get('http://localhost:8000/employees', {params: {_id: this.$route.params.id}})
       .then(result => {
         this.result = result
         this.employee = result.data.data[0]
@@ -135,7 +135,7 @@ export default {
     },
 
     save () {
-      axios.post('http://localhost:8000/api/employees/modify', this.employee)
+      axios.post('http://localhost:8000/employees/modify', this.employee)
       .then(result => {
         this.toast({
           type: 'success',
@@ -145,7 +145,6 @@ export default {
 
       })
       .catch(error => {
-        console.log(error)
         if (error.response !== undefined) {
           this.error(error.response.data.errors)
         }
@@ -153,13 +152,21 @@ export default {
     },
 
     toast (params) {
-      this.refs.$toast.add(params)
+      this.$refs.toast.add(params)
     },
 
     error (errors) {
       this.errors = {}
       for (let error of errors) {
-        this.errors[error.type] = error.message
+        if (error.type === 'ErrorException') {
+          this.toast({
+            type: 'error',
+            title: 'Error',
+            body: error.message
+          })
+        } else {
+          this.errors[error.type] = error.message
+        }
       }
     },
 
@@ -177,7 +184,7 @@ export default {
       result: undefined,
       errors: {},
       employee: {
-        id: false,
+        id: this.$route.params.id,
         firstname: '',
         lastname: '',
         email: '',

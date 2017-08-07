@@ -45,22 +45,32 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
 
-        if (
-          $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ||
-          $exception instanceof NotFoundHttpException) {
-          return response(view('pages.notfound'), 404);
+      if (
+        $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ||
+        $exception instanceof NotFoundHttpException) {
+        return response(view('pages.notfound'), 404);
+      }
+
+      /*
+      $request
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      */
+      // dd(get_class_methods($request));
+      $request->header('Access-Control-Allow-Origin', '*');
+      $request->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+
+      $whoops = new \Whoops\Run;
+      if ($request->wantsJson()) {
+        $handler = (new \Whoops\Handler\JsonResponseHandler())->setJsonApi(true);
+        $whoops->pushHandler($handler);
+      } else {
+        $handler = new \Whoops\Handler\PrettyPageHandler();
+        if (config('app.editor')) {
+          $handler->setEditor(config('app.editor'));
         }
-          $whoops = new \Whoops\Run;
-          if ($request->wantsJson()) {
-            $handler = (new \Whoops\Handler\JsonResponseHandler())->setJsonApi(true);
-            $whoops->pushHandler($handler);
-          } else {
-            $handler = new \Whoops\Handler\PrettyPageHandler();
-          if (config('app.editor')) {
-            $handler->setEditor(config('app.editor'));
-          }
-          $whoops->pushHandler($handler);
-        }
+        $whoops->pushHandler($handler);
+      }
 
       return $whoops->handleException($exception);
 

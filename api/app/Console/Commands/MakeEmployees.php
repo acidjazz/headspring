@@ -66,6 +66,7 @@ class MakeEmployees extends Command
         $employee = new Employee();
         $employee->firstname = $faker->firstname;
         $employee->lastname = $faker->lastname;
+        $employee->name = $employee->firstname . ' ' . $employee->lastname;
         $employee->email = $faker->email;
         $employee->title = $faker->jobTitle;
         $employee->address = [

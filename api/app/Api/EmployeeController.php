@@ -17,16 +17,23 @@ class EmployeeController extends MetApiController {
 
     $this->addOption('_id', 'regex:/[0-9a-fA-F]{24}/');
     $this->addOption('active', 'in:true,false,both', 'both');
+    $this->addOption('search', 'nullable', '');
 
     if (!$query = $this->getQuery()) {
       return $this->error();
     }
 
-    // $employees = Employee::with('structures','entries');
+    // $employees = Employee::with('phone');
     $employees = Employee::query();
 
     if (isset($query['combined']['_id'])) {
       $employees = $employees->where(['_id' => $query['combined']['_id']]);
+    }
+
+    if (isset($query['combined']['search']) && $query['combined']['search'] !== '') {
+      $employees = $employees
+        ->where('name', 'regexp', new \MongoDB\BSON\Regex($query['combined']['search'], 'i'))
+        ->orWhere('email', 'regexp', new \MongoDB\BSON\Regex($query['combined']['search'], 'i'));
     }
 
     if (isset($query['combined']['active']) && $query['combined']['active'] !== 'both') {
@@ -37,9 +44,9 @@ class EmployeeController extends MetApiController {
       }
     }
 
-    // $employees = $employees->orderBy('updated_at', 'desc');
-    // $employees = $employees->orderBy('_id', 'desc');
+    $employees = $employees->orderBy('updated_at', 'desc');
     $employees = $employees->paginate(10);
+
     $this->addPaginate($employees);
 
     return $this->render($employees->items(),false);
@@ -48,6 +55,7 @@ class EmployeeController extends MetApiController {
 
   public function modify(Request $request)
   {
+    $this->addOption('_id', 'regex:/[0-9a-fA-F]{24}/');
 
     $this->addOption('firstname', 'required|string');
     $this->addOption('lastname', 'required|string');
@@ -62,14 +70,23 @@ class EmployeeController extends MetApiController {
       return $this->error();
     }
 
-    $employee = new Employee();
+    if ($query['combined']['_id'] === 'new') {
+      $employee = new Employee();
+      $message = 'Employee added successfully';
+    } else {
+      $employee = Employee::find($query['combined']['_id']);
+      $message = 'Employee updated successfully';
+    }
+
     foreach ($query['combined'] as $key=>$value) {
       $employee->$key = $value;
     }
 
+    $employee->name = $employee->firstname . ' ' . $employee->lastname;
+
     $employee->save();
 
-    return $this->render(['status' => 'Employee added successfully', '_id' => $employee->_id]);
+    return $this->render(['status' => $message, '_id' => $employee->_id]);
   }
 
 }
